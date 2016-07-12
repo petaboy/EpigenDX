@@ -1,6 +1,7 @@
 #Human ADAP1
 
-###Summary from NCBI
+###Summary from NCBI        
+
 <Table><tr>
 <td>
 ADAP1       
@@ -13,7 +14,8 @@ MIM: 608114
 ID: 11033
 </td></tr></Table>
 
-###Summary from Ensembl
+###Summary from Ensembl  
+
 <table>
 <tr>
   <th>Associated Gene Name</th>
