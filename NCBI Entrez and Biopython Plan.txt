@@ -1,0 +1,9 @@
+###Use BioPython to pull these info. Then use the UID from esearch as input for efetch
+
+Use This to pull UID with
+https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=gene&term=ADAP1[title]+%20%+Human[organism]
+
+
+
+Use This to Pull summary in text format =>Then reformat to HTML
+https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=gene&id=11033&retmode=text&rettype=abstract
