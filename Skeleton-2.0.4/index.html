@@ -30,6 +30,21 @@
 <body>
     <div class="container">
     <div class="row">
+        <ul class="nav">
+            <li><input class="u-half-width" type="search" placeholder="Gene name" id="gene" ></li>
+            <li>
+                <select class="u-half-width" id="species">
+                <option value="human">Human</option>
+                <option value="mouse">Mouse</option>
+                <option value="cow">Cow</option>
+                </select>
+            </li>
+            <li><input class="button-primary" type="submit" value="Search"></li>
+        </ul>
+    </div>
+                
+
+    <div class="row">
         
     <h3 id="summary-from-ensembl">Summary from NCBI</h3>
     <table>
