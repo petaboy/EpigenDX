@@ -1,7 +1,7 @@
 #Adapted from https://gist.github.com/keithshep/7776579#file-querybiomartexample-py
 
 
-def gene_summary_pull():
+def gene_summary_pull(ensembl_id):
     query_in_string= \
         '''http://ensembl.org/biomart/martservice?query=''' \
         '''<?xml version="1.0" encoding="UTF-8"?>'''\
@@ -29,7 +29,7 @@ def gene_summary_pull():
         print line
 
 
-def transcript_summary_pull():
+def transcript_summary_pull(ensembl_id):
     #Work on converting hsapiens.. and ensemblid into string input
 
     query_in_string = \
@@ -38,7 +38,7 @@ def transcript_summary_pull():
         '''<!DOCTYPE Query>'''\
         '''<Query  virtualSchemaName = "default" formatter = "HTML" header = "0" uniqueRows = "0" count = "" datasetConfigVersion = "0.6" >''' \
         '''<Dataset name = "hsapiens_gene_ensembl" interface = "default" >'''\
-        '''<Filter name = "ensembl_gene_id" value = "ENSG00000105963"/>'''\
+        '''<Filter name = "ensembl_gene_id" value = "%s"/>'''%(ensembl_id)\
         '''<Filter name = "transcript_gencode_basic" excluded = "0"/>'''\
         '''<Attribute name = "external_transcript_name" />'''\
         '''<Attribute name = "ensembl_transcript_id" />'''\
@@ -60,4 +60,4 @@ def transcript_summary_pull():
 if __name__ == "__main__":
     import requests
     #gene_summary_pull()
-    transcript_summary_pull()
+    transcript_summary_pull(raw_input("Ensembl ID"))
