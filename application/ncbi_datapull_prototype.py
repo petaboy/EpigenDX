@@ -1,5 +1,3 @@
-import xml.etree.ElementTree as ET
-from Bio import Entrez  #NCBI Data Interface
 def ncbi_UIDfinder(Gene,Species):    #Input Gene,Spcies, returns GeneID,NCBI Summary and EnsemblID
     Entrez.email = "nsaldanha@outlook.com"
     input_concat = "%s[Gene] %s[Orgn]" %(Gene,Species)
@@ -22,5 +20,7 @@ def fetch_Ensembl_ID(UID):  #Input UID, returns Ensembl ID
 
 if __name__ == '__main__':
     UID_input = ncbi_UIDfinder(raw_input("Gene"),raw_input("Species"))
+    import xml.etree.ElementTree as ET
+    from Bio import Entrez  #NCBI Data Interface
     print fetch_summary(UID_input)
     print fetch_Ensembl_ID(UID_input)

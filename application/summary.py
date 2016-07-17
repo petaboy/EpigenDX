@@ -1,7 +1,35 @@
+#ID Finder NCBI and Ensembl
+def ncbi_UIDfinder(Gene,Species):    #Input Gene,Spcies, returns GeneID,NCBI Summary and EnsemblID
+    Entrez.email = "nsaldanha@outlook.com"
+    input_concat = "%s[Gene] %s[Orgn]" %(Gene,Species)
+    search_results = Entrez.esearch("gene" ,input_concat )  #Outputs search results in XML
+    record = Entrez.read(search_results)    #Parses and converts XML to python dictionary
+    return record["IdList"][0]   #Selects first UID in the IDList
+
+#Data Pull - NCBI
+def ncbi_UID(Gene, Species):    #Input Gene,Spcies, returns GeneID,NCBI Summary and EnsemblID
+    Entrez.email = "nsaldanha@outlook.com"
+    input_concat = "%s[Gene] %s[Orgn]" %(Gene,Species)
+    search_results = Entrez.esearch("gene" ,input_concat )  #Outputs search results in XML
+    record = Entrez.read(search_results)    #Parses and converts XML to python dictionary
+    return record["IdList"][0]   #Selects first UID in the IDList
+
+def ncbi_summary(UID):     #Input UID, returns NCBI summary
+     input_str = str(UID)
+     summary = Entrez.efetch(db="gene" ,id=UID ,retmode="txt")
+     return summary.read()[4:]  # [4:] Starts the string read at 4th letter, removes extraneous words.
+
+def ensembl_ID(UID):  #Input UID, returns Ensembl ID
+    xml_dump = Entrez.efetch(db="gene", id=UID, retmode="xml")
+    xml_tree = ET.parse(xml_dump)
+    root = xml_tree.getroot()
+    return root[0][3][0][3][1][1][0][0].text
+
+#Data Pull ENSEMBL
 #Adapted from https://gist.github.com/keithshep/7776579#file-querybiomartexample-py
 
 
-def gene_summary_pull(ensembl_gene_id):
+def ensembl_gene_summary(ensembl_gene_id):
     query_in_string= \
         '''http://ensembl.org/biomart/martservice?query=''' \
         '''<?xml version="1.0" encoding="UTF-8"?>'''\
@@ -29,10 +57,8 @@ def gene_summary_pull(ensembl_gene_id):
     for line in req.iter_lines():
         print line
 
-
-def transcript_summary_pull(ensembl_gene_id):
+def ensembl_transcript_table(ensembl_gene_id):
     #Work on converting hsapiens.. and ensemblid into string input
-
     query_in_string = \
         '''http://ensembl.org/biomart/martservice?query=''' \
         '''<?xml version="1.0" encoding="UTF-8"?>''' \
@@ -63,6 +89,12 @@ def transcript_summary_pull(ensembl_gene_id):
     for line in req.iter_lines():
          print line
 if __name__ == "__main__":
+    import xml.etree.ElementTree as ET
+    from Bio import Entrez  #NCBI Data Interface)
     import requests
-    gene_summary_pull(raw_input("Ensembl gene ID"))
-    transcript_summary_pull(raw_input("Ensembl gene ID"))
+
+    UID = ncbi_UID(raw_input("Gene"), raw_input("Species"))
+    print ncbi_summary(UID)
+    Ensembl_ID = ensembl_ID(UID)
+    ensembl_gene_summary(Ensembl_ID)
+    ensembl_transcript_table(Ensembl_ID)
