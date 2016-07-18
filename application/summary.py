@@ -47,15 +47,19 @@ def ensembl_gene_summary(ensembl_gene_id):
         '''<Attribute name = "transcript_count" />'''\
         '''</Dataset>'''\
         '''</Query>'''
-
     url = query_in_string % (ensembl_gene_id)
     req = requests.get(url, stream=True)
+    soup = BeautifulSoup(req.text)
+    table = soup.table
+    return table
 
-    with open('gene_summary.html','w') as towrite:
-        towrite.write(req.content)
-        towrite.close()
-    for line in req.iter_lines():
-        print line
+
+
+    # with open('gene_summary.html','w') as towrite:
+    #     towrite.write(req.content)
+    #     towrite.close()
+    # for line in req.iter_lines():
+    #     print line
 
 def ensembl_transcript_table(ensembl_gene_id):
     #Work on converting hsapiens.. and ensemblid into string input
@@ -81,20 +85,21 @@ def ensembl_transcript_table(ensembl_gene_id):
 
     url = query_in_string % (ensembl_gene_id)
     req = requests.get(url, stream=True)
+    url = query_in_string % (ensembl_gene_id)
+    req = requests.get(url, stream=True)
+    soup = BeautifulSoup(req.text)
+    table = soup.table
+    return table
 
-    with open('transcript_list.html','w') as towrite:
-        towrite.write(req.content)
-        towrite.close()
 
-    for line in req.iter_lines():
-         print line
 if __name__ == "__main__":
     import xml.etree.ElementTree as ET
     from Bio import Entrez  #NCBI Data Interface)
     import requests
+    from BeautifulSoup import BeautifulSoup
 
     UID = ncbi_UID(raw_input("Gene"), raw_input("Species"))
-    print ncbi_summary(UID)
-    Ensembl_ID = ensembl_ID(UID)
-    ensembl_gene_summary(Ensembl_ID)
-    ensembl_transcript_table(Ensembl_ID)
+    ncbi_summary =  ncbi_summary(UID)
+    ensembl_ID = ensembl_ID(UID)
+    ensembl_gene_summary = ensembl_gene_summary(ensembl_ID)
+    ensembl_transcript_table = ensembl_transcript_table(ensembl_ID)
