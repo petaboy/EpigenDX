@@ -1,5 +1,7 @@
 #ID Finder NCBI and Ensembl
 def ncbi_UIDfinder(Gene,Species):    #Input Gene,Spcies, returns GeneID,NCBI Summary and EnsemblID
+    from Bio import Entrez  #NCBI Data Interface)
+
     Entrez.email = "nsaldanha@outlook.com"
     input_concat = "%s[Gene] %s[Orgn]" %(Gene,Species)
     search_results = Entrez.esearch("gene" ,input_concat )  #Outputs search results in XML
@@ -8,6 +10,8 @@ def ncbi_UIDfinder(Gene,Species):    #Input Gene,Spcies, returns GeneID,NCBI Sum
 
 #Data Pull - NCBI
 def ncbi_UID(Gene, Species):    #Input Gene,Spcies, returns GeneID,NCBI Summary and EnsemblID
+    from Bio import Entrez  #NCBI Data Interface)
+
     Entrez.email = "nsaldanha@outlook.com"
     input_concat = "%s[Gene] %s[Orgn]" %(Gene,Species)
     search_results = Entrez.esearch("gene" ,input_concat )  #Outputs search results in XML
@@ -15,11 +19,16 @@ def ncbi_UID(Gene, Species):    #Input Gene,Spcies, returns GeneID,NCBI Summary 
     return record["IdList"][0]   #Selects first UID in the IDList
 
 def ncbi_summary(UID):     #Input UID, returns NCBI summary
-     input_str = str(UID)
-     summary = Entrez.efetch(db="gene" ,id=UID ,retmode="txt")
-     return summary.read()[4:]  # [4:] Starts the string read at 4th letter, removes extraneous words.
+    from Bio import Entrez  #NCBI Data Interface)
+    summary = Entrez.efetch(db="gene" ,id=UID ,retmode="txt")
+    return summary.read()[4:] #Starts the string read at 4th letter, removes extraneous words.
+
+
 
 def ensembl_ID(UID):  #Input UID, returns Ensembl ID
+    from Bio import Entrez  #NCBI Data Interface)
+    import xml.etree.ElementTree as ET
+
     xml_dump = Entrez.efetch(db="gene", id=UID, retmode="xml")
     xml_tree = ET.parse(xml_dump)
     root = xml_tree.getroot()
@@ -28,8 +37,10 @@ def ensembl_ID(UID):  #Input UID, returns Ensembl ID
 #Data Pull ENSEMBL
 #Adapted from https://gist.github.com/keithshep/7776579#file-querybiomartexample-py
 
-
 def ensembl_gene_summary(ensembl_gene_id):
+    from BeautifulSoup import BeautifulSoup
+    import requests
+
     query_in_string= \
         '''http://ensembl.org/biomart/martservice?query=''' \
         '''<?xml version="1.0" encoding="UTF-8"?>'''\
@@ -62,6 +73,9 @@ def ensembl_gene_summary(ensembl_gene_id):
     #     print line
 
 def ensembl_transcript_table(ensembl_gene_id):
+    from BeautifulSoup import BeautifulSoup
+    import requests
+
     #Work on converting hsapiens.. and ensemblid into string input
     query_in_string = \
         '''http://ensembl.org/biomart/martservice?query=''' \
@@ -85,21 +99,16 @@ def ensembl_transcript_table(ensembl_gene_id):
 
     url = query_in_string % (ensembl_gene_id)
     req = requests.get(url, stream=True)
-    url = query_in_string % (ensembl_gene_id)
-    req = requests.get(url, stream=True)
     soup = BeautifulSoup(req.text)
     table = soup.table
     return table
 
 
 if __name__ == "__main__":
-    import xml.etree.ElementTree as ET
-    from Bio import Entrez  #NCBI Data Interface)
-    import requests
-    from BeautifulSoup import BeautifulSoup
-
-    UID = ncbi_UID(raw_input("Gene"), raw_input("Species"))
+    UID = ncbi_UID(raw_input('gene'), raw_input('species'))
     ncbi_summary =  ncbi_summary(UID)
+    print ncbi_summary
     ensembl_ID = ensembl_ID(UID)
     ensembl_gene_summary = ensembl_gene_summary(ensembl_ID)
     ensembl_transcript_table = ensembl_transcript_table(ensembl_ID)
+
