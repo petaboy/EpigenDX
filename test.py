@@ -29,6 +29,11 @@ def submit():
 
    return render_template('submit.html',ncbi_summary=ncbi_summary,ensembl_gene_summary=ensembl_gene_summary,ensembl_transcript_table=ensembl_transcript_table)
 
+@app.route('/transcript', methods=['POST'])
+   import transcript
+
+   return render_template()
+
 # Run the app :)
 if __name__ == '__main__':
    app.run()

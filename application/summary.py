@@ -1,28 +1,26 @@
-#ID Finder NCBI and Ensembl
-def ncbi_UIDfinder(Gene,Species):    #Input Gene,Spcies, returns GeneID,NCBI Summary and EnsemblID
-    from Bio import Entrez  #NCBI Data Interface)
-
-    Entrez.email = "nsaldanha@outlook.com"
-    input_concat = "%s[Gene] %s[Orgn]" %(Gene,Species)
-    search_results = Entrez.esearch("gene" ,input_concat )  #Outputs search results in XML
-    record = Entrez.read(search_results)    #Parses and converts XML to python dictionary
-    return record["IdList"][0]   #Selects first UID in the IDList
-
 #Data Pull - NCBI
 def ncbi_UID(Gene, Species):    #Input Gene,Spcies, returns GeneID,NCBI Summary and EnsemblID
     from Bio import Entrez  #NCBI Data Interface)
+    import xml.etree.ElementTree as ET
 
     Entrez.email = "nsaldanha@outlook.com"
     input_concat = "%s[Gene] %s[Orgn]" %(Gene,Species)
     search_results = Entrez.esearch("gene" ,input_concat )  #Outputs search results in XML
-    record = Entrez.read(search_results)    #Parses and converts XML to python dictionary
-    return record["IdList"][0]   #Selects first UID in the IDList
+    xml_tree = ET.parse(search_results)
+    root = xml_tree.getroot()
+    #record = Entrez.read(search_results)    #Parses and converts XML to python dictionary
+
+    return root[3][0].text  #Selects first UID in the IDList
 
 def ncbi_summary(UID):     #Input UID, returns NCBI summary
-    from Bio import Entrez  #NCBI Data Interface)
-    summary = Entrez.efetch(db="gene" ,id=UID ,retmode="txt")
-    return summary.read()[4:] #Starts the string read at 4th letter, removes extraneous words.
+    # from Bio import Entrez  #NCBI Data Interface)
+    # summary = Entrez.efetch(db="gene" ,id=UID ,retmode="xml")
+    import requests
 
+    query_in_string = '''https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=gene&id=%s&retmode=text&rettype=abstract'''
+    url = query_in_string % (UID)
+    summary = requests.get(url, stream=True)
+    return summary.content[4:] #Starts the string read at 4th letter, removes extraneous words.
 
 
 def ensembl_ID(UID):  #Input UID, returns Ensembl ID
@@ -106,7 +104,7 @@ def ensembl_transcript_table(ensembl_gene_id):
 
 if __name__ == "__main__":
     UID = ncbi_UID(raw_input('gene'), raw_input('species'))
-    ncbi_summary =  ncbi_summary(UID)
+    ncbi_summary = ncbi_summary(UID)
     print ncbi_summary
     ensembl_ID = ensembl_ID(UID)
     ensembl_gene_summary = ensembl_gene_summary(ensembl_ID)
