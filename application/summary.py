@@ -105,7 +105,6 @@ def ensembl_transcript_table(ensembl_gene_id):
 if __name__ == "__main__":
     UID = ncbi_UID(raw_input('gene'), raw_input('species'))
     ncbi_summary = ncbi_summary(UID)
-    print ncbi_summary
     ensembl_ID = ensembl_ID(UID)
     ensembl_gene_summary = ensembl_gene_summary(ensembl_ID)
     ensembl_transcript_table = ensembl_transcript_table(ensembl_ID)
